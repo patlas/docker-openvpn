@@ -96,5 +96,8 @@ if [ $? = 0 ]; then
     sysctl -w net.ipv6.conf.all.forwarding=1 || echo "Failed to enable IPv6 Forwarding"
 fi
 
+echo "Execute custom routing for VPN addresses - grant externall access do vpn client 80 port"
+/usr/local/bin/ip_routing.sh
+
 echo "Running 'openvpn ${ARGS[@]} ${USER_ARGS[@]}'"
 exec openvpn ${ARGS[@]} ${USER_ARGS[@]}

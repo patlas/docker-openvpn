@@ -31,7 +31,5 @@ CMD ["ovpn_run"]
 ADD ./bin /usr/local/bin
 RUN chmod a+x /usr/local/bin/*
 
-# set address routing inside vpn to grant access to web via server
-RUN /usr/local/bin/ip_routing.sh
 # Add support for OTP authentication using a PAM module
 ADD ./otp/openvpn /etc/pam.d/

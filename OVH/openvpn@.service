@@ -32,7 +32,7 @@
 #
 [Unit]
 Description=OpenVPN Docker Container
-Documentation=https://github.com/kylemanna/docker-openvpn
+Documentation=https://github.com/patlas/docker-openvpn
 After=network.target docker.service
 Requires=docker.service
 
@@ -57,7 +57,7 @@ Environment="PORT_TELNET_MANAGER=7505:7505"
 ExecStartPre=-/usr/bin/docker rm -f $NAME
 
 # Attempt to pull new image for security updates
-ExecStartPre=-/usr/bin/docker pull $IMG
+#ExecStartPre=-/usr/bin/docker pull $IMG
 
 # IPv6: Ensure forwarding is enabled on host's networking stack (hacky)
 # Would be nice to use systemd-network on the host, but this doens't work
@@ -65,7 +65,7 @@ ExecStartPre=-/usr/bin/docker pull $IMG
 ExecStartPre=/bin/sh -c 'test -z "$IP6_PREFIX" && exit 0; sysctl net.ipv6.conf.all.forwarding=1'
 
 # Main process
-ExecStart=/usr/bin/docker run --rm --cap-add=NET_ADMIN -v /home/docker-volumes/${DATA_VOL}:/etc/openvpn --name ${NAME} -p ${PORT} -p ${PORT_TELNET_MANAGER} ${IMG} ovpn_run $ARGS
+ExecStart=/usr/bin/docker run --rm --cap-add=NET_ADMIN --net solar_net --ip 172.100.1.2 -v ${DATA_VOL}:/etc/openvpn --name ${NAME} -p ${PORT} -p ${PORT_TELNET_MANAGER} ${IMG} ovpn_run $ARGS
 
 # IPv6: Add static route for IPv6 after it starts up
 ExecStartPost=/bin/sh -c 'test -z "${IP6_PREFIX}" && exit 0; sleep 1; ip route replace ${IP6_PREFIX} via $(docker inspect -f "{{ .NetworkSettings.GlobalIPv6Address }}" $NAME ) dev docker0'
